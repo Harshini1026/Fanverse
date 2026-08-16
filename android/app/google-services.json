@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1047804866763",
+    "project_id": "fanverse-e765c",
+    "storage_bucket": "fanverse-e765c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047804866763:android:629c2387476940322aab4e",
+        "android_client_info": {
+          "package_name": "com.example.fan_verse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047804866763-npldirminog56sbmuvr0tdhge78nmnda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fan_verse",
+            "certificate_hash": "5896206d33201000393a0a52be63d5e4fcf2d15a"
+          }
+        },
+        {
+          "client_id": "1047804866763-jhlsovqmgg5f6sqigpc7s66thl9cec3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQI65xJBxlgNXXKsdt_6RarlBthOvb9aQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047804866763-jhlsovqmgg5f6sqigpc7s66thl9cec3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
