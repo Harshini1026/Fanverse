@@ -1,5 +1,5 @@
 
-import 'package:fan_verse/features/screens/auth/signup_screen.dart';
+import 'package:fan_verse/features/auth/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +34,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   } on FirebaseAuthException catch (e) {
     if (!mounted) return;
 
-    print("Firebase Error Code: ${e.code}");
-    print("Firebase Error Message: ${e.message}");
 
     String message;
 
@@ -57,7 +55,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       ),
     );
   } catch (e) {
-    print("Error: $e");
 
     if (!mounted) return;
 

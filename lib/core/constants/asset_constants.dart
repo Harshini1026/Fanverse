@@ -11,4 +11,5 @@ class AppColors {
 
   static const Color cardBackground = Color(0xFF080D18);
   static const Color border = Color(0xFF1B2635);
+ 
 }

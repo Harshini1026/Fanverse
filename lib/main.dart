@@ -1,5 +1,5 @@
 import 'package:fan_verse/core/theme/app_theme.dart';
-import 'package:fan_verse/features/screens/auth/login_screen.dart';
+import 'package:fan_verse/features/home/presentation/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home:LoginScreen(),
+      home:HomeScreen(),
     );
   }
 }

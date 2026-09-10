@@ -1,4 +1,4 @@
-import 'package:fan_verse/features/screens/home/home_screen.dart';
+import 'package:fan_verse/features/home/presentation/screens/home_screen.dart';
 import 'package:fan_verse/service/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

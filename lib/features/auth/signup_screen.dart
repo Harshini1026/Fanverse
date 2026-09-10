@@ -1,72 +1,75 @@
 import 'dart:ui';
-import 'package:fan_verse/features/screens/auth/forgot_password.dart';
-import 'package:fan_verse/features/screens/home/home_screen.dart';
-import 'package:fan_verse/features/screens/auth/signup_screen.dart';
+import 'package:fan_verse/features/auth/login_screen.dart';
+import 'package:fan_verse/features/home/presentation/screens/home_screen.dart';
+import 'package:fan_verse/service/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:fan_verse/service/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  String email="",password="";
-  TextEditingController emailcontroller=TextEditingController();
-  TextEditingController passwordcontroller=TextEditingController();
+class _SignupScreenState extends State<SignupScreen> {
+  String name="",email="",password="",confirmpassword="";
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController emailcontroller =TextEditingController();
+  TextEditingController passwordcontroller =TextEditingController();
+  TextEditingController confirmpasswordcontroller =TextEditingController();
 
-   bool _isObscure = true; 
-  
-  final _formkey=GlobalKey<FormState>();
+  bool _isObscure = true; 
+  bool _isConfirmObscure = true;
 
-  Future<void>userLogin() async{
-    try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      if(!mounted)return;
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  final _formkey = GlobalKey<FormState>();
+
+ Future<void> registration() async{
+    if(passwordcontroller.text!=""&&namecontroller.text!=""&& emailcontroller.text!=""&& passwordcontroller.text==confirmpasswordcontroller.text){
+      try{
+        await FirebaseAuth.instance
+         .createUserWithEmailAndPassword(email: email, password: password);
+         if(!mounted)return;
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content:Center(
             child: const Text(
-              "Login Successfully",
+              "Registered Successfully",
               style: TextStyle(fontSize: 20),
             ),
           )
          ));
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreen()));
-    } on FirebaseAuthException catch (e){
-      if (e.code == 'user-not-found'){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: const Color.fromARGB(255, 4, 228, 244),
-          content: Center(
-            child: Text(
-              "No User Found for that Email",
+         Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+      }on FirebaseAuthException catch(e){
+         if(!mounted)return;
+        if (e.code == 'weak-password'){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: const Color.fromARGB(255, 4, 228, 244),
+            content:Center(
+              child: const Text("Password is too weak",
               style: TextStyle(fontSize: 18),
-            ),
-          ),
-        ));
-      }else if(e.code == 'wrong-password'){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor:const Color.fromARGB(255, 4, 228, 244) ,
-          content: Center(
-            child: Text(
-              "Wrong Password Provided by User",
+              ),
+            )));
+        } else if (e.code == 'email-already-in-use'){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: const Color.fromARGB(255, 4, 228, 244),
+            content: Center(
+              child: Text(" Account Already exists",
               style: TextStyle(fontSize: 18),
-            ),
-          ),));
-      }else {
+              ),
+            )));
+        }else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Center(child: Text(e.message ?? "Authentication failed")),
         ));
+      }
       }
     }
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+       body: Stack(
         children:[ 
           Container(
           height: double.infinity,
@@ -87,14 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: AlignmentGeometry.bottomCenter,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 135),
+                            padding: const EdgeInsets.only(top: 70),
                             child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                              children: [
-                               Text("Welcome To...",
-                                    style: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.bold,),
-                                    ),
-                                    SizedBox(height: 10,),
                                 Text("FANVERSE",
                                 style: GoogleFonts.orbitron( 
                                 color: Color(0xFF00E5FF),
@@ -102,6 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontWeight: FontWeight.bold,
                                 ),
                              ),
+                               SizedBox(height: 10,),
+                             Text("Sign Up",
+                                    style: TextStyle(color: const Color.fromRGBO(255, 255, 255, 1),fontSize: 22,fontWeight: FontWeight.bold,),
+                                ),
                             ],
                             ),
                           ),
@@ -130,6 +133,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                   cursorColor: const Color.fromARGB(255, 4, 228, 244),
                                   validator: (value) {
                                     if(value==null||value.isEmpty){
+                                      return 'Please Enter Name';
+                                    }
+                                    return null;
+                                  },
+                                  controller: namecontroller,
+                                  style: TextStyle(color: Colors.white,fontSize: 18),
+                                    decoration: InputDecoration(  
+                                      prefixIcon: Icon(Icons.person,color: Colors.white,),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      border: InputBorder.none,
+                                      hintText: "Enter your name...",
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 40,vertical: 15),
+                                      hintStyle: TextStyle(
+                                        color: Colors.white,fontSize: 18,
+                                      ),
+                                      ),
+                                      ),
+                                      ),
+                                    ),
+                              ),
+                               SizedBox(
+                                 height: 20,
+                               ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0,horizontal: 15.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.50))
+                                ),
+                                child: TextFormField(
+                                   cursorColor: const Color.fromARGB(255, 4, 228, 244),
+                                  validator: (value) {
+                                    if(value==null||value.isEmpty){
                                       return 'Please Enter Email';
                                     }
                                     if(!value.contains("@")){
@@ -144,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       filled: true,
                                       fillColor: Colors.transparent,
                                       border: InputBorder.none,
-                                      hintText: "Enter your email here...",
+                                      hintText: "Enter your mail...",
                                       contentPadding: EdgeInsets.symmetric(horizontal: 40,vertical: 15),
                                       hintStyle: TextStyle(
                                         color: Colors.white,fontSize: 18,
@@ -168,8 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     border: Border.all(color: Colors.white.withValues(alpha: 0.50))
                                   ),
                                   child: TextFormField(
-                                    cursorColor: const Color.fromARGB(255, 4, 228, 244),
-                                     validator: (value) {
+                                     cursorColor: const Color.fromARGB(255, 4, 228, 244),
+                                    validator: (value) {
                                     if(value==null||value.isEmpty){
                                       return 'Password cannot be empty';
                                     }
@@ -184,19 +225,73 @@ class _LoginScreenState extends State<LoginScreen> {
                                       decoration: InputDecoration(
                                       prefixIcon: Icon(Icons.lock,color: Colors.white,),
                                       suffixIcon: IconButton(
-                                      icon: Icon(
-                                       _isObscure?Icons.visibility_off:Icons.visibility,
-                                      color: Colors.white,),
+                                        icon:Icon(
+                                          _isObscure?Icons.visibility_off:Icons.visibility,
+                                        color: Colors.white,),
+                                        onPressed:() {
+                                          setState(() {
+                                            _isObscure=!_isObscure;
+                                          });
+                                        },
+                                        ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      border: InputBorder.none,
+                                      hintText: "Your password...",
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 40,vertical: 15),
+                                      hintStyle: TextStyle(
+                                        color: Colors.white,fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0,horizontal: 15.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.50))
+                                  ),
+                                  child: TextFormField(
+                                     cursorColor: const Color.fromARGB(255, 4, 228, 244),
+                                     validator: (value) {
+                                    if(value==null||value.isEmpty){
+                                      return 'Confirm Password cannot be empty';
+                                    }
+                                    if(value!=passwordcontroller.text){
+                                      return "Password don't match";
+                                    }
+                                    return null;
+                                  },
+                                    controller: confirmpasswordcontroller,
+                                     obscureText:_isConfirmObscure,
+                                      style: TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.lock,color: Colors.white,),
+                                      suffixIcon: IconButton (
+                                      icon:Icon(
+                                        _isConfirmObscure?Icons.visibility_off:Icons.visibility,
+                                        color: Colors.white,
+                                      ),
                                       onPressed: () {
                                         setState(() {
-                                          _isObscure=!_isObscure;
+                                        _isConfirmObscure=!_isConfirmObscure;
                                         });
                                       },
                                       ),
                                       filled: true,
                                       fillColor: Colors.transparent,
                                       border: InputBorder.none,
-                                      hintText: "Your password...",
+                                      hintText: "Confirm password...",
                                       contentPadding: EdgeInsets.symmetric(horizontal: 40,vertical: 15),
                                       hintStyle: TextStyle(
                                         color: Colors.white,fontSize: 18,
@@ -216,9 +311,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if(_formkey.currentState!.validate()){
                                   setState(() {
                                     email=emailcontroller.text;
+                                    name=namecontroller.text;
                                     password=passwordcontroller.text;
+                                    confirmpassword=confirmpasswordcontroller.text;
                                   });
-                                  userLogin();
+                                  registration();
                                 }
                               },
                               child: Container(
@@ -239,11 +336,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Colors.black,
                                     ]),
                                     borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(color: Colors.white.withValues(alpha: 0.30))
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.70))
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "Log In",
+                                      "Sign Up",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 22.0,
@@ -252,19 +349,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                               ),
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPassword()));
-                            },
-                            child: Text("Forget Password?",
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 4, 228, 244),
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w500,
-                            ),
                             ),
                           ),
                           SizedBox(
@@ -315,7 +399,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                            children: [
                              Text(
-                              "Don't have an account?",
+                              "Already have an account?",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.0,
@@ -324,12 +408,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                              SizedBox(width: 5.0,),
                              GestureDetector(
-                              onTap: () {
-                                Navigator.push(
+                               onTap: () {
+                                 Navigator.push(
                                   context, MaterialPageRoute(
-                                    builder: (context)=>SignupScreen()));
-                              },
-                               child: Text("SignUp",
+                                    builder: (context)=>LoginScreen()));
+                               },
+                               child: Text("Login",
                                style: TextStyle(
                                color: const Color.fromARGB(255, 4, 228, 244),
                                 fontSize: 21.0,
